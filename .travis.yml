@@ -1,0 +1,20 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t flopivg/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run flopivg/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t flopivg/multi-client ./client
+  - docker build -t flopivg/multi-nginx ./nginx
+  - docker build -t flopivg/multi-server ./server
+  - docker build -t flopivg/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push flopivg/multi-client
+  - docker push flopivg/multi-nginx
+  - docker push flopivg/multi-server
+  - docker push flopivg/multi-worker
