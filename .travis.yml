@@ -18,3 +18,16 @@ after_success:
   - docker push flopivg/multi-nginx
   - docker push flopivg/multi-server
   - docker push flopivg/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-3
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-eu-west-3-155458439364
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
